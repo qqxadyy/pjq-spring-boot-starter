@@ -1,0 +1,2 @@
+本jar使用新版本的spring boot插件自动引入方式进行自动配置(即使用org.springframework.boot.autoconfigure.AutoConfiguration.imports文件)
+如果应用本身的spring boot版本不支持该方式，也会自动使用旧方式进行自动配置(即使用spring.factories文件)

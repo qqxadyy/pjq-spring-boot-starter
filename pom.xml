@@ -1,0 +1,277 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>com.github.qqxadyy</groupId>
+		<artifactId>pjq-parent</artifactId>
+		<version>1.3.3-SNAPSHOT</version>
+	</parent>
+
+	<artifactId>pjq-spring-boot-starter</artifactId>
+	<version>1.0.0-SNAPSHOT</version>
+	<name>pjq-spring-boot-starter</name>
+	<description>个人常用的Spring Boot应用配置代码</description>
+	<inceptionYear>2023</inceptionYear>
+	<url>https://github.com/qqxadyy/pjq-spring-boot-starter</url>
+	<licenses>
+		<license>
+			<name>MIT License</name>
+			<url>http://www.opensource.org/licenses/mit-license.php</url>
+		</license>
+	</licenses>
+	<developers>
+		<developer>
+			<name>pengjianqiang</name>
+		</developer>
+	</developers>
+	<scm>
+		<connection>scm:git:https://gitee.com/qqxadyy/pjq-spring-boot-starter.git</connection>
+		<developerConnection>scm:git:https://gitee.com/qqxadyy/pjq-spring-boot-starter.git</developerConnection>
+		<url>https://github.com/qqxadyy/pjq-spring-boot-starter</url>
+		<tag>HEAD</tag>
+	</scm>
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+		<java.version>1.8</java.version>
+		<skipTests>true</skipTests>
+	</properties>
+
+	<dependencies>
+		<dependency>
+			<groupId>com.github.qqxadyy</groupId>
+			<artifactId>pjq-commons-utils</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-openfeign</artifactId>
+			<optional>true</optional>
+		</dependency>
+		<dependency>
+			<groupId>io.github.openfeign</groupId>
+			<artifactId>feign-okhttp</artifactId>
+			<optional>true</optional>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-web</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-actuator</artifactId>
+		</dependency>
+		<dependency>
+			<!-- Spring Boot2.3版本不再内部依赖validator，需要显式引入 -->
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-validation</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-jpa</artifactId>
+			<optional>true</optional>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-redis</artifactId>
+			<optional>true</optional>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-configuration-processor</artifactId>
+			<optional>true</optional>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-gateway</artifactId>
+			<optional>true</optional>
+		</dependency>
+
+		<!-- swagger2 + knife4j的ui模块-->
+		<dependency>
+			<groupId>io.springfox</groupId>
+			<artifactId>springfox-swagger2</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>io.springfox</groupId>
+			<artifactId>springfox-swagger-common</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>io.springfox</groupId>
+			<artifactId>springfox-swagger-ui</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>io.springfox</groupId>
+			<artifactId>springfox-boot-starter</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.plugin</groupId>
+			<artifactId>spring-plugin-core</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.plugin</groupId>
+			<artifactId>spring-plugin-metadata</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.github.xiaoymin</groupId>
+			<artifactId>knife4j-openapi2-ui</artifactId>
+		</dependency>
+
+		<dependency>
+			<!-- 有log4j等具体的日志实现时，不需要引入slf4j-simple -->
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-simple</artifactId>
+			<optional>true</optional>
+		</dependency>
+
+		<!-- 全局排除spring的logback依赖 -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-logging</artifactId>
+			<optional>true</optional>
+			<exclusions>
+				<exclusion>
+					<groupId>*</groupId>
+					<artifactId>*</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>com.mycila</groupId>
+				<artifactId>license-maven-plugin</artifactId>
+				<configuration>
+					<licenseSets>
+						<licenseSet>
+							<multi>
+								<header>licenseHeaders/MY_LICENSE_HEADER</header>
+								<separator>======================================================================</separator>
+								<header>com/mycila/maven/plugin/license/templates/MIT.txt</header>
+							</multi>
+							<excludes>
+								<exclude>**/pom.xml</exclude>
+								<exclude>**/README</exclude>
+								<exclude>README.md</exclude>
+								<exclude>LICENSE</exclude>
+								<exclude>licenseHeaders/**</exclude>
+								<exclude>src/test/java/**</exclude>
+								<exclude>src/test/resources/**</exclude>
+								<exclude>src/main/resources/**</exclude>
+								<exclude>**/package.info</exclude>
+							</excludes>
+						</licenseSet>
+					</licenseSets>
+					<properties>
+						<owner>pengjianqiang</owner>
+					</properties>
+					<strictCheck>true</strictCheck> <!--严格检查 -->
+				</configuration>
+				<executions>
+					<execution>
+						<!-- mvn license:对应goal -->
+						<goals>
+							<goal>check</goal> <!-- 检查某些源文件中是否缺少头信息 -->
+							<goal>remove</goal> <!-- 删除现有的头信息 -->
+							<goal>format</goal> <!-- 如果缺少则添加头信息 -->
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<source>${java.version}</source>
+					<target>${java.version}</target>
+					<compilerArgs>
+						<arg>-parameters</arg>
+					</compilerArgs>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+			</plugin>
+
+			<!-- maven-source-plugin和maven-javadoc-plugin的写法主要以sonatype官网的为主再修改，另外增加去掉doclint检查 -->
+			<plugin>
+				<!-- 打源码包 -->
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-source-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>attach-sources</id>
+						<goals>
+							<goal>jar-no-fork</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>attach-javadocs</id>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<encoding>${project.build.sourceEncoding}</encoding>
+					<aggregate>true</aggregate>
+					<charset>${project.build.sourceEncoding}</charset>
+					<docencoding>${project.build.sourceEncoding}</docencoding>
+					<!-- 禁用java8 的DocLint新特性，以确保当javadoc有编译错误时，也能正常生成javadoc jar包(取消对源码中的doc参数注释等检查) -->
+					<doclint>none</doclint>
+					<additionalparam>-Xdoclint:none</additionalparam>
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<!-- 自动进行gpg验证 -->
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-gpg-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>sign-artifacts</id>
+						<phase>verify</phase>
+						<goals>
+							<goal>sign</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+
+			<plugin>
+				<!-- 自动提交到sonatype审批发布 -->
+				<groupId>org.sonatype.plugins</groupId>
+				<artifactId>nexus-staging-maven-plugin</artifactId>
+				<extensions>true</extensions>
+				<configuration>
+					<serverId>sonatype-nexus</serverId> <!-- 和settings.xml里面的server配置一致，还有distributionManagement也是 -->
+					<nexusUrl>https://oss.sonatype.org/</nexusUrl>
+					<autoReleaseAfterClose>true</autoReleaseAfterClose>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-release-plugin</artifactId>
+				<configuration>
+					<autoVersionSubmodules>true</autoVersionSubmodules>
+					<useReleaseProfile>false</useReleaseProfile>
+					<releaseProfiles>release</releaseProfiles>
+					<goals>deploy</goals>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+</project>
