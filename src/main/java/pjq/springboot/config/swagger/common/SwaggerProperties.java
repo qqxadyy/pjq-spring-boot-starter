@@ -66,22 +66,22 @@ public class SwaggerProperties {
     /**
      * 项目应用名
      */
-    private String applicationTitle;
+    private String applicationTitle = "系统API文档";
 
     /**
      * 项目版本信息
      */
-    private String applicationVersion;
+    private String applicationVersion = "V1.0";
 
     /**
      * 项目描述信息
      */
-    private String applicationDescription;
+    private String applicationDescription = "系统API文档";
 
     /**
      * 接口调试地址
      */
-    private String host;
+    private String host = "http://localhost";
 
     /**
      * 要显示API的Controller包路径
@@ -101,8 +101,11 @@ public class SwaggerProperties {
     @SuppressWarnings("deprecation")
     Predicate<RequestHandler> apiSelectors() {
         Predicate<RequestHandler> basePackagesPredicate = RequestHandlerSelectors.none();
-        for (String basePackage : basePackages) {
-            basePackagesPredicate = basePackagesPredicate.or(RequestHandlerSelectors.basePackage(basePackage));
+
+        if (CheckUtils.isNotEmpty(basePackages)) {
+            for (String basePackage : basePackages) {
+                basePackagesPredicate = basePackagesPredicate.or(RequestHandlerSelectors.basePackage(basePackage));
+            }
         }
 
         if (CheckUtils.isNotEmpty(excludeControllers)) {

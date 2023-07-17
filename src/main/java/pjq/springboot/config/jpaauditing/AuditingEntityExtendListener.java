@@ -140,6 +140,8 @@ public class AuditingEntityExtendListener {
     }
 
     private AuditorExtendAware findAwareObj() {
+        //直接对象注入bean的话可能会出现注入的bean对象为空，但是实际getBean能获取到bean的情况
+        //所以用ObjectProvider去获取bean，如果bean不存在则通过getBean获取
         return auditorConfigProvider.getIfAvailable(() -> SpringContextHolder.getBean(AuditorExtendAware.class));
     }
 
