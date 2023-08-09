@@ -38,6 +38,7 @@ import java.util.List;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.boot.actuate.autoconfigure.endpoint.web.CorsEndpointProperties;
 import org.springframework.boot.actuate.autoconfigure.endpoint.web.WebEndpointProperties;
+import org.springframework.boot.actuate.autoconfigure.endpoint.web.servlet.WebMvcEndpointManagementContextConfiguration;
 import org.springframework.boot.actuate.autoconfigure.web.server.ManagementPortType;
 import org.springframework.boot.actuate.endpoint.ExposableEndpoint;
 import org.springframework.boot.actuate.endpoint.web.EndpointLinksResolver;
@@ -69,7 +70,8 @@ import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger.configuration.SwaggerCommonConfiguration;
 
 /**
- * swagger3配置
+ * swagger3配置<br>
+ * EnableConfigurationProperties注解中配置的CorsEndpointProperties和WebEndpointProperties，是主动注入这两个bean，避免actuator被关闭时这两个bean为空的情况
  *
  * @author pengjianqiang
  * @date 2021年5月14日
@@ -78,7 +80,7 @@ import springfox.documentation.swagger.configuration.SwaggerCommonConfiguration;
 @ConfigurationWithoutProxy
 @ConditionalOnSpringCommonWebApplication
 @ConditionalOnClass(SwaggerCommonConfiguration.class)
-@EnableConfigurationProperties(SwaggerProperties.class)
+@EnableConfigurationProperties({ SwaggerProperties.class, CorsEndpointProperties.class, WebEndpointProperties.class })
 public class Swagger4CommonWebConfig {
     @Bean
     @ConditionalOnMissingBean
@@ -128,6 +130,7 @@ public class Swagger4CommonWebConfig {
      * @param webEndpointProperties
      * @param environment
      * @return
+     * @see WebMvcEndpointManagementContextConfiguration#webEndpointServletHandlerMapping(WebEndpointsSupplier, ServletEndpointsSupplier, ControllerEndpointsSupplier, EndpointMediaTypes, CorsEndpointProperties, WebEndpointProperties, Environment)
      */
     @Bean
     @ConditionalOnClass(name = "org.springframework.boot.actuate.endpoint.web.servlet.AdditionalHealthEndpointPathsWebMvcHandlerMapping")
