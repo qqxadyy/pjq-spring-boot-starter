@@ -98,7 +98,7 @@ public class CacheKeyPrefixDecorator {
      */
     public String withPrefix(String key, boolean autoAppend) {
         if (CheckUtils.isEmpty(key)) {
-            key = "unKnownKey";
+            key = "unknownKey";
         }
 
         StringBuilder resultKey = new StringBuilder();

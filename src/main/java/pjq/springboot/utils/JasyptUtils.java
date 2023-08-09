@@ -53,14 +53,34 @@ public final class JasyptUtils {
     private static final String SUFFIX = ")";
     private static final Pattern pattern = Pattern.compile("^ENC\\(.*\\)$");
 
+    /**
+     * 为加密字符串增加固定前后缀<br>
+     * 处理后的格式为：ENC(XXX)
+     *
+     * @param text
+     * @return
+     */
     public static String wrapEncryptedText(String text) {
         return PREFIX + text + SUFFIX;
     }
 
+    /**
+     * 去掉加密字符串的固定前后缀<br>
+     * 若没有固定前后缀则原样返回
+     *
+     * @param text
+     * @return
+     */
     public static String unwrapEncryptedText(String text) {
         return isEncryptedText(text) ? (text.substring(PREFIX.length(), text.length() - 1)) : text;
     }
 
+    /**
+     * 判断字符串是否已经过加密
+     *
+     * @param text
+     * @return
+     */
     public static boolean isEncryptedText(String text) {
         return pattern.matcher(text).matches();
     }
@@ -115,7 +135,8 @@ public final class JasyptUtils {
     }
 
     /**
-     * 根据提供的加密器解密字符串
+     * 根据提供的加密器解密字符串<br>
+     * 为自动去掉字符串中的固定前后缀
      *
      * @param encryptor
      * @param text

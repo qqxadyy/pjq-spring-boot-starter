@@ -40,9 +40,10 @@ package pjq.springboot.config.multitenant;
  */
 public abstract class MultiTenantInfoHolder {
     private static boolean IS_MULTI_TENANT_ENABLED;
-    public static final String UNKNOWN_TENANT_NAME = "unKnownTenant";
+    public static final String UNKNOWN_TENANT_NAME = "unknownTenant";
 
     static {
+        //用静态方法设置默认值，不在变量定义时使用final，即必须显式使用本类才表示开启多租户模式
         IS_MULTI_TENANT_ENABLED = true;
     }
 
