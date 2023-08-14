@@ -85,7 +85,8 @@ public class SwaggerResourceProvider implements SwaggerResourcesProvider {
 
         swaggerResourceProviderHelperProvider.ifAvailable(swaggerResourceProviderHelper -> {
             //不从RouteLocator里面解析，直接从配置文件中解析
-            Collection<String> needGatherServices = CollectionUtils.filter(discoveryClient.getServices(),
+            Collection<String> needGatherServices = CollectionUtils.filter(
+                    swaggerResourceProviderHelper.getServices(discoveryClient),
                     swaggerResourceProviderHelper.needGatherServiceApi());
 
             // 记录已经添加过的应用名(因为一个应用可以有多个实例)
