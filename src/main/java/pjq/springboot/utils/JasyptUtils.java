@@ -39,6 +39,7 @@ import org.jasypt.encryption.pbe.config.SimpleStringPBEConfig;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
+import pjq.springboot.config.jasypt.SM4StringEncryptor;
 
 /**
  * Jasypt加解密简单工具类<br>
@@ -86,7 +87,7 @@ public final class JasyptUtils {
     }
 
     /**
-     * 根据jasypt密码构造加密器
+     * 根据Jasypt密码构造Jasypt默认算法的加密器
      *
      * @param password
      * @return
@@ -101,7 +102,18 @@ public final class JasyptUtils {
     }
 
     /**
-     * 调试用方法，只用于生成一个加密值并复制到配置文件中
+     * 创建使用国密SM4算法的Jasypt加密器
+     *
+     * @param password
+     * @return
+     */
+    public static StringEncryptor buildSM4StringEncryptor(String password) {
+        return new SM4StringEncryptor(password);
+    }
+
+    /**
+     * 调试用方法，只用于生成一个加密值并复制到配置文件中<br>
+     * 使用的是Jasypt默认算法进行加密
      *
      * @param password
      * @param text

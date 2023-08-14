@@ -52,11 +52,12 @@ import pjq.springboot.utils.JasyptUtils;
  * @author pengjianqiang
  * @date 2021-08-09
  */
-@Configuration(proxyBeanMethods = false)
+@Configuration
 @ConditionalOnClass({ JasyptSpringBootAutoConfiguration.class, EnableEncryptablePropertiesConfiguration.class,
         StringEncryptor.class })
 public class JasyptConfig {
     public static final String BEAN_NAME = "jasyptStringEncryptor";
+    public static final String BEAN_NAME_FOR_SM4 = "sm4StringEncryptor";
 
     @Bean
     @ConditionalOnMissingBean
@@ -76,5 +77,17 @@ public class JasyptConfig {
     @Bean(BEAN_NAME)
     public StringEncryptor stringEncryptor(JasyptPasswordGetter jasyptPasswordGetter) {
         return JasyptUtils.buildStringEncryptor(jasyptPasswordGetter.getPassword());
+    }
+
+    /**
+     * 创建使用国密SM4算法的Jasypt加密器并作为Bean对象<br>
+     * 可以配置jasypt.encryptor.bean=sm4StringEncryptor，则配置文件的加解密使用本Bean处理
+     *
+     * @param jasyptPasswordGetter
+     * @return
+     */
+    @Bean(BEAN_NAME_FOR_SM4)
+    public StringEncryptor sm4StringEncryptor(JasyptPasswordGetter jasyptPasswordGetter) {
+        return JasyptUtils.buildSM4StringEncryptor(jasyptPasswordGetter.getPassword());
     }
 }

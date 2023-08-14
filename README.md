@@ -3,7 +3,7 @@
 注意：
 1.如果是SpringGateway网关的应用引入本包，则需要排除spring-boot-starter-web包的引入
 ```
-<dependency>
+		<dependency>
 			<groupId>com.github.qqxadyy</groupId>
 			<artifactId>pjq-spring-boot-starter</artifactId>
 			<exclusions>

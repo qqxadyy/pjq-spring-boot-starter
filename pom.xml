@@ -49,6 +49,13 @@
 			<groupId>org.springframework.cloud</groupId>
 			<artifactId>spring-cloud-starter-openfeign</artifactId>
 			<optional>true</optional>
+			<exclusions>
+				<exclusion>
+					<!-- 移除jdk15on的依赖 -->
+					<groupId>org.bouncycastle</groupId>
+					<artifactId>bcpkix-jdk15on</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>io.github.openfeign</groupId>
