@@ -63,7 +63,7 @@ public class SwaggerResourceProviderHelper {
 
     /**
      * 判断是否为需要聚合显示接口文档的应用<br>
-     * 1.默认是应用名带"gateway"和"config"的不需要聚合<br>
+     * 1.默认是应用名带"registry"、"config"和"gateway"的不需要聚合<br>
      * 2.如果应用本身有特殊要求，可以自行定义Bean并重写本方法。实现时可用以下方式<br>
      * {@code super.needGatherServiceApi().and(serviceName->{
      * //应用需要实现的逻辑
@@ -78,7 +78,9 @@ public class SwaggerResourceProviderHelper {
                 return false;
             }
             String lowerServiceName = serviceName.toLowerCase();
-            return !lowerServiceName.contains("gateway") && !lowerServiceName.contains("config");
+            return !lowerServiceName.contains("registry")
+                    && !lowerServiceName.contains("config")
+                    && !lowerServiceName.contains("gateway");
         };
     }
 
