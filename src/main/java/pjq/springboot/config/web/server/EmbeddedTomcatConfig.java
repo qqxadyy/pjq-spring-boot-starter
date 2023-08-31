@@ -62,14 +62,24 @@ public class EmbeddedTomcatConfig implements WebServerFactoryCustomizer<TomcatSe
     @Override
     public void customize(TomcatServletWebServerFactory factory) {
         if (CheckUtils.isNotEmpty(customDocBaseDir)) {
-            File file = new File(customDocBaseDir);
-            file.mkdirs(); //保证目录存在
-            factory.setDocumentRoot(file);
+            String baseMsg = "设置自定义Tomcat docBase目录[{}]";
+            File dir = new File(customDocBaseDir);
+            String dirPath;
             try {
-                log.info("设置自定义Tomcat docBase目录[{}]", file.getCanonicalPath());
+                dirPath = dir.getCanonicalPath();
             } catch (Exception e) {
-                log.info("设置自定义Tomcat docBase目录[{}]", file.getAbsolutePath());
+                dirPath = dir.getAbsolutePath();
             }
+            if (!dir.exists()) {
+                try {
+                    dir.mkdirs(); //保证目录存在
+                } catch (Exception e) {
+                    log.info(baseMsg + "不成功，用默认值代替", dirPath);
+                    return;
+                }
+            }
+            factory.setDocumentRoot(dir);
+            log.info(baseMsg, dirPath);
         }
     }
 }
