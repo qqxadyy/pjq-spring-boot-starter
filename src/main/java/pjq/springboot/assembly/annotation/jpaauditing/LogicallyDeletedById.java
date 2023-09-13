@@ -29,43 +29,25 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package pjq.springboot.config.web.login;
+package pjq.springboot.assembly.annotation.jpaauditing;
+
+import java.lang.annotation.Documented;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+
+import static java.lang.annotation.ElementType.ANNOTATION_TYPE;
+import static java.lang.annotation.ElementType.FIELD;
+import static java.lang.annotation.ElementType.METHOD;
 
 /**
- * 当前登录用户信息获取接口
+ * 类似{@link CreatedById}
  *
- * @param <T>
- *         当前登录用户账号名的类型
- * @param <ID>
- *         当前登录用户ID的类型
  * @author pengjianqiang
- * @date 2023-06-08
+ * @date 2023-09-11
  */
-public interface LoginUserInfoAware<T, ID> {
-    /**
-     * 获取登录用户的唯一标识
-     *
-     * @return
-     */
-    default ID getUserId() {
-        return null;
-    }
-
-    /**
-     * 获取登录用户的账号名
-     *
-     * @return
-     */
-    default T getUserName() {
-        return null;
-    }
-
-    /**
-     * 获取登录用户的姓名
-     *
-     * @return
-     */
-    default String getName() {
-        return null;
-    }
+@Retention(RetentionPolicy.RUNTIME)
+@Target(value = { FIELD, METHOD, ANNOTATION_TYPE })
+@Documented
+public @interface LogicallyDeletedById {
 }

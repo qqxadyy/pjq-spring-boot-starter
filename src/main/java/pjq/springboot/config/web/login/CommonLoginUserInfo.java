@@ -33,7 +33,7 @@ package pjq.springboot.config.web.login;
 
 /**
  * 一般类型的登录用户信息<br>
- * 指登录用户的名称为String类型；登录用户的ID为Integer类型<br>
+ * 指登录用户的账号名为String类型；登录用户的唯一标识为Integer类型<br>
  * 如果工程的登录用户信息符合这两点，可以直接创建本类型的Bean
  *
  * @author pengjianqiang

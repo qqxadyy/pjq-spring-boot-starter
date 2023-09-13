@@ -51,11 +51,18 @@ import org.springframework.data.domain.AuditorAware;
  */
 public interface AuditorExtendAware<T, ID> extends AuditorAware<T> {
     /**
-     * 获取当前审计人的id，类似{@link #getCurrentAuditor()}
+     * 获取当前审计人的唯一标识，类似{@link #getCurrentAuditor()}
      *
      * @return
      */
     Optional<ID> getCurrentAuditorId();
+
+    /**
+     * 获取当前审计人的姓名，类似{@link #getCurrentAuditor()}
+     *
+     * @return
+     */
+    Optional<String> getCurrentAuditorName();
 
     /**
      * 获取其它需要在创建时自动插入的属性值<br>

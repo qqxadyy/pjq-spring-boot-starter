@@ -49,14 +49,22 @@ import org.springframework.data.domain.Auditable;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import org.springframework.util.Assert;
 
+import lombok.Data;
+import pjq.commons.constant.CommonEnumConstant.TrueOrFalse;
 import pjq.commons.constant.CommonEnumConstant.YesOrNoInt;
 import pjq.commons.utils.CheckUtils;
+import pjq.commons.utils.CommonTypeJudger;
 import pjq.commons.utils.collection.CollectionUtils;
 import pjq.springboot.assembly.annotation.jpaauditing.CreatedById;
+import pjq.springboot.assembly.annotation.jpaauditing.CreatedByName;
 import pjq.springboot.assembly.annotation.jpaauditing.CreatedTimestamp;
 import pjq.springboot.assembly.annotation.jpaauditing.LastModifiedById;
+import pjq.springboot.assembly.annotation.jpaauditing.LastModifiedByName;
 import pjq.springboot.assembly.annotation.jpaauditing.LastModifiedTimestamp;
 import pjq.springboot.assembly.annotation.jpaauditing.LogicallyDeleteFlag;
+import pjq.springboot.assembly.annotation.jpaauditing.LogicallyDeletedBy;
+import pjq.springboot.assembly.annotation.jpaauditing.LogicallyDeletedById;
+import pjq.springboot.assembly.annotation.jpaauditing.LogicallyDeletedByName;
 import pjq.springboot.assembly.annotation.jpaauditing.LogicallyDeletedDate;
 import pjq.springboot.assembly.annotation.jpaauditing.LogicallyDeletedTimestamp;
 import pjq.springboot.beanutil.SpringContextHolder;
@@ -70,11 +78,18 @@ import pjq.springboot.beanutil.SpringContextHolder;
  * 创建时间戳：{@link CreatedTimestamp}<br>
  * 创建人；{@link CreatedBy}<br>
  * 创建人ID：{@link CreatedById}<br>
+ * 创建人姓名：{@link CreatedByName}<br>
  * 修改时间；{@link LastModifiedDate}<br>
  * 修改时间戳：{@link LastModifiedTimestamp}<br>
  * 修改人；{@link LastModifiedBy}<br>
  * 修改人ID：{@link LastModifiedById}<br>
- * 逻辑删除标志：{@link LogicallyDeleteFlag}
+ * 修改人姓名：{@link LastModifiedByName}<br>
+ * 逻辑删除标志：{@link LogicallyDeleteFlag}<br>
+ * 逻辑删除时间；{@link LogicallyDeletedDate}<br>
+ * 逻辑删除时间戳：{@link LogicallyDeletedTimestamp}<br>
+ * 逻辑删除人；{@link LogicallyDeletedBy}<br>
+ * 逻辑删除人ID：{@link LogicallyDeletedById}<br>
+ * 逻辑删除人姓名：{@link LogicallyDeletedByName}
  *
  * @author pengjianqiang
  * @date 2021-05-28
@@ -83,6 +98,22 @@ import pjq.springboot.beanutil.SpringContextHolder;
 public class AuditingEntityExtendListener {
     @Resource
     private ObjectProvider<AuditorExtendAware> auditorConfigProvider;
+
+    public static void main(String[] args) {
+        Field[] fields = FieldUtils.getAllFields(A.class); //要获取target类及父类的属性
+        System.out.println(new AuditingEntityExtendListener().getField(fields, LogicallyDeleteFlag.class).getType());
+        ;
+    }
+
+    @Data
+    static class A {
+        //        @LogicallyDeleteFlag
+        private Integer a;
+        @LogicallyDeleteFlag
+        private Boolean b;
+        //        @LogicallyDeleteFlag
+        private Byte c;
+    }
 
     /**
      * Sets modification and creation date and auditor on the target object in case it implements {@link Auditable} on
@@ -96,14 +127,30 @@ public class AuditingEntityExtendListener {
         Assert.notNull(target, "Entity must not be null!");
         AuditorExtendAware awareObj = findAwareObj();
         Object auditorId = awareObj.getCurrentAuditorId().get();
+        Object auditorName = awareObj.getCurrentAuditorName().get();
         long currentTimestamp = System.currentTimeMillis();
 
         Field[] fields = FieldUtils.getAllFields(target.getClass()); //要获取target类及父类的属性
         setFieldValue(target, fields, CreatedById.class, auditorId);
         setFieldValue(target, fields, LastModifiedById.class, auditorId);
+        setFieldValue(target, fields, CreatedByName.class, auditorName);
+        setFieldValue(target, fields, LastModifiedByName.class, auditorName);
         setFieldValue(target, fields, CreatedTimestamp.class, currentTimestamp);
         setFieldValue(target, fields, LastModifiedTimestamp.class, currentTimestamp);
-        setFieldValue(target, fields, LogicallyDeleteFlag.class, YesOrNoInt.NO.valueOfInt());
+
+        //设置表示逻辑删除的属性时需要单独按类型进行处理
+        Field deletedFlagField = getField(fields, LogicallyDeleteFlag.class);
+        if (null != deletedFlagField) {
+            Class<?> deletedFlagFieldClass = deletedFlagField.getType();
+            if (CommonTypeJudger.isByteType(deletedFlagFieldClass)) {
+                setFieldValue(target, fields, LogicallyDeleteFlag.class, YesOrNoInt.NO.valueOfByte());
+            } else if (CommonTypeJudger.isBooleanType(deletedFlagFieldClass)) {
+                setFieldValue(target, fields, LogicallyDeleteFlag.class, TrueOrFalse.FALSE.valueOfBoolean());
+            } else {
+                //其它类型都按Integer处理，实际类型不匹配时不处理报错
+                setFieldValue(target, fields, LogicallyDeleteFlag.class, YesOrNoInt.NO.valueOfInt());
+            }
+        }
 
         //设置其它值
         CollectionUtils.forEach(awareObj.getOtherValuesWhileCreate(),
@@ -121,15 +168,22 @@ public class AuditingEntityExtendListener {
         Assert.notNull(target, "Entity must not be null!");
         AuditorExtendAware awareObj = findAwareObj();
         Object auditorId = awareObj.getCurrentAuditorId().get();
+        Object auditorName = awareObj.getCurrentAuditorName().get();
         long currentTimestamp = System.currentTimeMillis();
 
         Field[] fields = FieldUtils.getAllFields(target.getClass()); //要获取target类及父类的属性
         setFieldValue(target, fields, LastModifiedById.class, auditorId);
+        setFieldValue(target, fields, LastModifiedByName.class, auditorName);
         setFieldValue(target, fields, LastModifiedTimestamp.class, currentTimestamp);
 
-        //如果逻辑删除标志为1，则同时更新删除时间和时间戳
+        //如果逻辑删除标志为1(需要处理不同类型)，则同时更新删除时间和时间戳
         Object logicallyDeleteFlag = getFieldValue(target, fields, LogicallyDeleteFlag.class);
-        if (YesOrNoInt.YES.valueOfInt().equals(logicallyDeleteFlag)) {
+        if (YesOrNoInt.YES.valueOfInt().equals(logicallyDeleteFlag) ||
+                YesOrNoInt.YES.valueOfByte().equals(logicallyDeleteFlag) ||
+                TrueOrFalse.TRUE.valueOfBoolean().equals(logicallyDeleteFlag)) {
+            setFieldValue(target, fields, LogicallyDeletedBy.class, awareObj.getCurrentAuditor().get());
+            setFieldValue(target, fields, LogicallyDeletedById.class, auditorId);
+            setFieldValue(target, fields, LogicallyDeletedByName.class, auditorName);
             setFieldValue(target, fields, LogicallyDeletedDate.class, new Date());
             setFieldValue(target, fields, LogicallyDeletedTimestamp.class, currentTimestamp);
         }
@@ -145,29 +199,44 @@ public class AuditingEntityExtendListener {
         return auditorConfigProvider.getIfAvailable(() -> SpringContextHolder.getBean(AuditorExtendAware.class));
     }
 
-    private void setFieldValue(Object target, Field[] fields, Class<? extends Annotation> targetAnno,
+    public void setFieldValue(Object target, Field[] fields, Class<? extends Annotation> targetAnno,
             Object targetValue) {
-        Field targetField = CollectionUtils.filterOne(fields, field -> field.isAnnotationPresent(targetAnno));
+        Field targetField = getField(fields, targetAnno);
         if (CheckUtils.isNull(targetField)) {
-            return;
+            return; //不存在对应字段则不处理
         }
         try {
             targetField.setAccessible(true);
             targetField.set(target, targetValue);
         } catch (Exception e) {
+            //报错不处理
         }
     }
 
-    private Object getFieldValue(Object target, Field[] fields, Class<? extends Annotation> targetAnno) {
-        Field targetField = CollectionUtils.filterOne(fields, field -> field.isAnnotationPresent(targetAnno));
+    public Object getFieldValue(Object target, Field[] fields, Class<? extends Annotation> targetAnno) {
+        Field targetField = getField(fields, targetAnno);
         if (CheckUtils.isNull(targetField)) {
-            return null;
+            return null; //不存在对应字段则不处理
         }
         try {
             targetField.setAccessible(true);
             return targetField.get(target);
         } catch (Exception e) {
+            //报错返回null
             return null;
+        }
+    }
+
+    public Field getField(Field[] fields, Class<? extends Annotation> targetAnno) {
+        Field[] targetFields = CollectionUtils.filter(fields, field -> field.isAnnotationPresent(targetAnno));
+        if (CheckUtils.isEmpty(targetFields)) {
+            return null;
+        } else if (targetFields.length > 1) {
+            String errMsg = "类[" + targetFields[0].getDeclaringClass()
+                    .getName() + "]存在多个[@" + targetAnno.getSimpleName() + "]注解的属性";
+            throw new RuntimeException(errMsg);
+        } else {
+            return targetFields[0];
         }
     }
 }

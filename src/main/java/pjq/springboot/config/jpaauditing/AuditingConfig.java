@@ -59,7 +59,7 @@ public class AuditingConfig {
     @Bean
     @ConditionalOnMissingBean
     public <T, ID> AuditorExtendAware<T, ID> auditorExtendAware(LoginUserInfoAware<T, ID> loginUserInfoAware) {
-        log.info("加载用于自动保存数据创建者名称等的扩展AuditorAware");
+        log.info("加载用于自动保存数据记录操作人唯一标识等的扩展AuditorAware");
         return new AuditorExtendAware<T, ID>() {
             @Override
             public Optional<T> getCurrentAuditor() {
@@ -69,6 +69,11 @@ public class AuditingConfig {
             @Override
             public Optional<ID> getCurrentAuditorId() {
                 return Optional.ofNullable(loginUserInfoAware.getUserId());
+            }
+
+            @Override
+            public Optional<String> getCurrentAuditorName() {
+                return Optional.ofNullable(loginUserInfoAware.getName());
             }
         };
     }
