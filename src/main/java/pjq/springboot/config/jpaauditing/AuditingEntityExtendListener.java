@@ -49,7 +49,6 @@ import org.springframework.data.domain.Auditable;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import org.springframework.util.Assert;
 
-import lombok.Data;
 import pjq.commons.constant.CommonEnumConstant.TrueOrFalse;
 import pjq.commons.constant.CommonEnumConstant.YesOrNoInt;
 import pjq.commons.utils.CheckUtils;
@@ -98,22 +97,6 @@ import pjq.springboot.beanutil.SpringContextHolder;
 public class AuditingEntityExtendListener {
     @Resource
     private ObjectProvider<AuditorExtendAware> auditorConfigProvider;
-
-    public static void main(String[] args) {
-        Field[] fields = FieldUtils.getAllFields(A.class); //要获取target类及父类的属性
-        System.out.println(new AuditingEntityExtendListener().getField(fields, LogicallyDeleteFlag.class).getType());
-        ;
-    }
-
-    @Data
-    static class A {
-        //        @LogicallyDeleteFlag
-        private Integer a;
-        @LogicallyDeleteFlag
-        private Boolean b;
-        //        @LogicallyDeleteFlag
-        private Byte c;
-    }
 
     /**
      * Sets modification and creation date and auditor on the target object in case it implements {@link Auditable} on

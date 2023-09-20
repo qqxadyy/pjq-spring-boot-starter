@@ -53,6 +53,8 @@ import pjq.commons.utils.CheckUtils;
 import pjq.commons.utils.CommonTypeJudger;
 import pjq.commons.utils.collection.CollectionUtils;
 import pjq.springboot.assembly.annotation.validate.IsEnum.IsEnumValidator;
+import pjq.springboot.assembly.annotation.validate.IsEnum.IsEnumValidator4Byte;
+import pjq.springboot.assembly.annotation.validate.IsEnum.IsEnumValidator4ByteList;
 import pjq.springboot.assembly.annotation.validate.IsEnum.IsEnumValidator4Integer;
 import pjq.springboot.assembly.annotation.validate.IsEnum.IsEnumValidator4IntegerList;
 import pjq.springboot.assembly.annotation.validate.IsEnum.IsEnumValidator4List;
@@ -66,8 +68,10 @@ import pjq.springboot.assembly.annotation.validate.IsEnum.IsEnumValidator4List;
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ ElementType.FIELD, ElementType.PARAMETER })
-@Constraint(validatedBy = { IsEnumValidator.class, IsEnumValidator4List.class, IsEnumValidator4Integer.class,
-        IsEnumValidator4IntegerList.class })
+@Constraint(validatedBy = { IsEnumValidator.class, IsEnumValidator4List.class,
+        IsEnumValidator4Integer.class, IsEnumValidator4IntegerList.class,
+        IsEnumValidator4Byte.class, IsEnumValidator4ByteList.class
+})
 public @interface IsEnum {
     String message() default "参数值未定义";
 
@@ -153,8 +157,8 @@ public @interface IsEnum {
         @Override
         public boolean check(String value, ConstraintValidatorContext context) {
             try {
-                return !NullEnum.class.equals(getTargetEnum()) && (CheckUtils.isEmpty(value) || DefaultEnhanceEnum
-                        .isEnumOf(getTargetEnum(), value));
+                return !NullEnum.class.equals(getTargetEnum())
+                        && (CheckUtils.isEmpty(value) || DefaultEnhanceEnum.isEnumOf(getTargetEnum(), value));
             } catch (Exception e) {
                 return false;
             }
@@ -192,8 +196,9 @@ public @interface IsEnum {
         @Override
         public boolean check(Integer value, ConstraintValidatorContext context) {
             try {
-                return !NullEnum.class.equals(getTargetEnum()) && (CheckUtils.isNull(value) || DefaultEnhanceEnum
-                        .isEnumOf(getTargetEnum(), String.valueOf(value)));
+                return !NullEnum.class.equals(getTargetEnum())
+                        && (CheckUtils.isNull(value)
+                        || DefaultEnhanceEnum.isEnumOf(getTargetEnum(), String.valueOf(value)));
             } catch (Exception e) {
                 return false;
             }
@@ -211,6 +216,46 @@ public @interface IsEnum {
                     return true;
                 } else {
                     for (Integer v : value) {
+                        if (CheckUtils.isNull(v)) {
+                            continue; //其中一个或多个为空时跳过
+                        }
+                        if (!DefaultEnhanceEnum.isEnumOf(getTargetEnum(), String.valueOf(v))) {
+                            return false;
+                        }
+                    }
+                    return true;
+                }
+            } catch (Exception e) {
+                return false;
+            }
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    public class IsEnumValidator4Byte extends BaseIsEnumValidator<Byte> {
+        @Override
+        public boolean check(Byte value, ConstraintValidatorContext context) {
+            try {
+                return !NullEnum.class.equals(getTargetEnum())
+                        && (CheckUtils.isNull(value)
+                        || DefaultEnhanceEnum.isEnumOf(getTargetEnum(), String.valueOf(value)));
+            } catch (Exception e) {
+                return false;
+            }
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    public class IsEnumValidator4ByteList extends BaseIsEnumValidator<List<Byte>> {
+        @Override
+        public boolean check(List<Byte> value, ConstraintValidatorContext context) {
+            try {
+                if (NullEnum.class.equals(getTargetEnum())) {
+                    return false;
+                } else if (CheckUtils.isEmpty(value)) {
+                    return true;
+                } else {
+                    for (Byte v : value) {
                         if (CheckUtils.isNull(v)) {
                             continue; //其中一个或多个为空时跳过
                         }
