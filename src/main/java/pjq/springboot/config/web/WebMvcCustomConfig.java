@@ -86,8 +86,14 @@ public class WebMvcCustomConfig implements WebMvcConfigurer {
      */
     @Override
     public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
+        logAddResolver(LocalDateMethodArgumentResolver.class);
         resolvers.add(new LocalDateMethodArgumentResolver());
+        logAddResolver(LocalDateTimeMethodArgumentResolver.class);
         resolvers.add(new LocalDateTimeMethodArgumentResolver());
+    }
+
+    private void logAddResolver(Class<?> resolverClass) {
+        log.info("添加HandlerMethodArgumentResolver[{}]", resolverClass.getName());
     }
 
     /**
@@ -109,6 +115,9 @@ public class WebMvcCustomConfig implements WebMvcConfigurer {
         Map<Class<?>, JsonSerializer<?>> serializers = new HashMap<>();
         serializers.put(LocalDateTime.class, new LocalDateTimeSerializer(dateTimeFormatter));
         serializers.put(LocalTime.class, new LocalTimeSerializer(timeFormatter));
+
+        //增加处理java.sql.Clob对象的序列化处理
+        serializers.put(Clob.class, new ClobSerializer());
 
         //post json时对象中有LocalDateTime和LocalTime属性的转换(LocalDate默认已支持格式yyyy-MM-dd)
         //Date类型的属性不处理，即需要按要求传入yyyy-MM-dd HH:mm:ss格式的参数
@@ -133,9 +142,6 @@ public class WebMvcCustomConfig implements WebMvcConfigurer {
             }
         });
         deserializers.put(LocalTime.class, new LocalTimeDeserializer(timeFormatter));
-
-        //增加处理java.sql.Clob对象的序列化处理
-        serializers.put(Clob.class, new ClobSerializer());
 
         return builder -> builder.serializersByType(serializers).deserializersByType(deserializers);
     }

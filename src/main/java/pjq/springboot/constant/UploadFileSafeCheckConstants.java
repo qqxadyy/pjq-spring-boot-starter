@@ -35,16 +35,16 @@ import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
 /**
- * swagger相关常量
+ * 上传文件安全检查相关常量
  *
  * @author pengjianqiang
- * @date 2023-06-07
+ * @date 2023-11-16
  */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public final class SwaggerConstants {
+public final class UploadFileSafeCheckConstants {
     /**
-     * 是否开启swagger<br>
+     * 是否开启上传文件安全检查服务<br>
      * 默认开启
      */
-    public static final String SWAGGER_ENABLED = "pjq.swagger.enabled";
+    public static final String UPLOAD_FILE_SAFE_CHECK_ENABLED = "pjq.upload-file.safe-check.enabled";
 }

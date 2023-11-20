@@ -83,9 +83,9 @@ public interface Java8TimeMethodArgumentResolver<T> extends HandlerMethodArgumen
     @SuppressWarnings("unchecked")
     public default Class<T> getTClass() {
         try {
-            return (Class<T>) Class
-                    .forName(((ParameterizedType) getClass().getGenericInterfaces()[0]).getActualTypeArguments()[0]
-                                     .getTypeName());
+            return (Class<T>) Class.forName(((ParameterizedType) getClass().getGenericInterfaces()[0])
+                    .getActualTypeArguments()[0]
+                    .getTypeName());
         } catch (ClassNotFoundException e) {
             return null;
         }

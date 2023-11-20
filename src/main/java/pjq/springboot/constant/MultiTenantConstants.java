@@ -42,5 +42,9 @@ import lombok.NoArgsConstructor;
  */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class MultiTenantConstants {
+    /**
+     * 是否开启多租户模式<br>
+     * 默认不开启
+     */
     public static final String MULTI_TENANT_ENABLED = "pjq.multi-tenant.enabled";
 }

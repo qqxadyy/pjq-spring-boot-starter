@@ -34,11 +34,14 @@ package pjq.springboot.config.web.controlleradvice;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Date;
+import javax.annotation.PostConstruct;
 
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import lombok.extern.slf4j.Slf4j;
+import pjq.springboot.assembly.annotation.condition.ConditionalOnSpringCommonWebApplication;
 import pjq.springboot.assembly.argumentresolve.WebMvcDateCustomEditor;
 import pjq.springboot.assembly.argumentresolve.WebMvcDateCustomEditor.WebMvcLocalDateCustomEditor;
 import pjq.springboot.assembly.argumentresolve.WebMvcDateCustomEditor.WebMvcLocalDateTimeCustomEditor;
@@ -49,8 +52,15 @@ import pjq.springboot.assembly.argumentresolve.WebMvcDateCustomEditor.WebMvcLoca
  * @author pengjianqiang
  * @date 2023-05-10
  */
+@Slf4j
 @RestControllerAdvice
+@ConditionalOnSpringCommonWebApplication
 public class GlobalInitBinder {
+    @PostConstruct
+    public void init() {
+        log.info("加载全局的接口参数绑定器");
+    }
+
     /**
      * 执行Controller方法之前的数据绑定操作
      *

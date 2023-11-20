@@ -29,22 +29,52 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package pjq.springboot.constant;
+package pjq.springboot.service.filesafecheck;
 
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
+import java.io.File;
 
 /**
- * swagger相关常量
+ * 文件安全检查服务Service<br>
+ * 具体工程可按需实现多个实现类，以检查不同的文件类型
  *
  * @author pengjianqiang
- * @date 2023-06-07
+ * @date 2023-11-09
  */
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
-public final class SwaggerConstants {
+public interface FileSafeCheckService {
     /**
-     * 是否开启swagger<br>
-     * 默认开启
+     * 判断文件是否需要做安全检查
+     *
+     * @param file
+     *         文件对象
+     * @param mimeType
+     *         文件mimeType值
+     * @param extension
+     *         文件后缀名
+     * @return
      */
-    public static final String SWAGGER_ENABLED = "pjq.swagger.enabled";
+    boolean needCheck(File file, String mimeType, String extension);
+
+    /**
+     * 当文件不安全时提示的文字内容
+     *
+     * @param extension
+     *         文件后缀名
+     * @return
+     */
+    default String notSafeMsg(String extension) {
+        return null;
+    }
+
+    /**
+     * 检查文件是否安全
+     *
+     * @param file
+     *         文件对象
+     * @param mimeType
+     *         文件mimeType值
+     * @param extension
+     *         文件后缀名
+     * @return
+     */
+    boolean isSafe(File file, String mimeType, String extension);
 }

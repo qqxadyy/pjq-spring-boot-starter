@@ -29,22 +29,20 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package pjq.springboot.constant;
+package pjq.springboot.assembly.annotation.filesafecheck;
 
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
- * swagger相关常量
+ * 表示需要检查上传文件安全性的注解
  *
  * @author pengjianqiang
- * @date 2023-06-07
+ * @date 2023-11-17
  */
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
-public final class SwaggerConstants {
-    /**
-     * 是否开启swagger<br>
-     * 默认开启
-     */
-    public static final String SWAGGER_ENABLED = "pjq.swagger.enabled";
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.METHOD)
+public @interface SafeCheckUploadFile {
 }

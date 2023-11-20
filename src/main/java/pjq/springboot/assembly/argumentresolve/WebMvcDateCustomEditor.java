@@ -62,8 +62,9 @@ public class WebMvcDateCustomEditor extends PropertyEditorSupport {
     public void setAsText(String text) throws IllegalArgumentException {
         Object value = null;
         if (CheckUtils.isNotEmpty(text)) {
+            String trimText = text.trim();
             try {
-                value = DateTimeUtils.parseLocalDateTime(text);
+                value = DateTimeUtils.parseLocalDateTime(trimText);
             } catch (Exception e1) {
                 value = null;
             }
@@ -73,10 +74,10 @@ public class WebMvcDateCustomEditor extends PropertyEditorSupport {
             } else {
                 for (int i = 0, size = patterns.size(); i < size; i++) {
                     try {
-                        value = DateTimeUtils.parseDate(text, patterns.get(i));
+                        value = DateTimeUtils.parseDate(trimText, patterns.get(i));
                         break;
                     } catch (Exception e) {
-                        CheckUtils.checkNotFalse(i < size - 1, "参数验证失败：参数值[".concat(text).concat("]不能转换为日期类型"));
+                        CheckUtils.checkNotFalse(i < size - 1, "参数验证失败：参数值[".concat(trimText).concat("]不能转换为日期类型"));
                     }
                 }
             }

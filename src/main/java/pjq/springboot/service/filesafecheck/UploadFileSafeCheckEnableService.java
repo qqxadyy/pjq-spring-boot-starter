@@ -29,22 +29,24 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package pjq.springboot.constant;
+package pjq.springboot.service.filesafecheck;
 
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
+import pjq.springboot.constant.UploadFileSafeCheckConstants;
 
 /**
- * swagger相关常量
+ * 上传文件安全检查服务启用Service
  *
  * @author pengjianqiang
- * @date 2023-06-07
+ * @date 2023-11-09
  */
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
-public final class SwaggerConstants {
+public interface UploadFileSafeCheckEnableService {
     /**
-     * 是否开启swagger<br>
-     * 默认开启
+     * 是否开启上传文件安全检查服务，当返回true时才会实际检查上传文件是否安全(默认开启)<br>
+     * 这个相当于二级开关，一级开关为{@link UploadFileSafeCheckConstants#UPLOAD_FILE_SAFE_CHECK_ENABLED}
+     *
+     * @return
      */
-    public static final String SWAGGER_ENABLED = "pjq.swagger.enabled";
+    default boolean safeCheckUploadFileEnabled() {
+        return true;
+    }
 }
