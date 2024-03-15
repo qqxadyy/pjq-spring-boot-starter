@@ -12,7 +12,7 @@
 	<version>1.1.0-SNAPSHOT</version>
 	<name>pjq-spring-boot-starter</name>
 	<description>个人常用的Spring Boot应用配置代码</description>
-	<inceptionYear>2023</inceptionYear>
+	<inceptionYear>2024</inceptionYear>
 	<url>https://github.com/qqxadyy/pjq-spring-boot-starter</url>
 	<licenses>
 		<license>
