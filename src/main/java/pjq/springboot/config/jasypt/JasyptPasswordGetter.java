@@ -132,7 +132,7 @@ public interface JasyptPasswordGetter {
      */
     class DefaultJasyptPasswordGetter implements JasyptPasswordGetter {
         @Override
-        @JasyptPassword("MFwwDQYJKoZIhvcNAQEBBQADSwAwSAJBAOWa8GVukzLLkAMHBkb/hjWbnyz8pEOnP8J2kd171k3F0GH8a4wujdwPqHRQHUKAclUgJP5h0P7IZJ96ePqzxJkCAwEAAQ==")
+        @JasyptPassword("a870e331bb407a5328cfe028fc154622eb32f7e3d7a9fa1f0a27e88e678b9d01750162c484767b418a70178f483736f3202d21881cb7c50fcadff15fb965565c")
         public void emptyMethod() {
         }
     }
