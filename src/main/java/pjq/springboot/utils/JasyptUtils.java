@@ -39,6 +39,8 @@ import org.jasypt.encryption.pbe.config.SimpleStringPBEConfig;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
+import pjq.springboot.config.jasypt.JasyptPasswordGetter.CustomAlgorithm;
+import pjq.springboot.config.jasypt.SM4CTRStringEncryptor;
 import pjq.springboot.config.jasypt.SM4StringEncryptor;
 
 /**
@@ -87,28 +89,59 @@ public final class JasyptUtils {
     }
 
     /**
+     * 根据Jasypt密码及算法构造对应的Jasypt加密器
+     *
+     * @param password
+     * @return
+     */
+    public static StringEncryptor buildEncryptor(String password, CustomAlgorithm algorithm) {
+        if (null == algorithm) {
+            throw new RuntimeException("暂不支持构造该算法的Jasypt加密器");
+        }
+        switch (algorithm) {
+            case JASYPT_DEFAULT:
+                PooledPBEStringEncryptor encryptor = new PooledPBEStringEncryptor();
+                SimpleStringPBEConfig config = new SimpleStringPBEConfig(); //只设置必须项，其它用默认的
+                config.setPassword(password);
+                config.setPoolSize("1");
+                encryptor.setConfig(config);
+                return encryptor;
+            case SM4:
+                return new SM4StringEncryptor(password);
+            case SM4_CTR:
+                return new SM4CTRStringEncryptor(password);
+        }
+        throw new RuntimeException("暂不支持构造该算法的Jasypt加密器");
+    }
+
+    /**
      * 根据Jasypt密码构造Jasypt默认算法的加密器
      *
      * @param password
      * @return
      */
     public static StringEncryptor buildStringEncryptor(String password) {
-        PooledPBEStringEncryptor encryptor = new PooledPBEStringEncryptor();
-        SimpleStringPBEConfig config = new SimpleStringPBEConfig(); //只设置必须项，其它用默认的
-        config.setPassword(password);
-        config.setPoolSize("1");
-        encryptor.setConfig(config);
-        return encryptor;
+        return buildEncryptor(password, CustomAlgorithm.JASYPT_DEFAULT);
     }
 
     /**
-     * 创建使用国密SM4算法的Jasypt加密器
+     * 创建使用国密SM4算法(GCM模式)的Jasypt加密器
      *
      * @param password
      * @return
      */
     public static StringEncryptor buildSM4StringEncryptor(String password) {
-        return new SM4StringEncryptor(password);
+        return buildEncryptor(password, CustomAlgorithm.SM4);
+    }
+
+    /**
+     * 创建使用国密SM4算法(CTR模式)的Jasypt加密器
+     *
+     * @param password
+     * @return
+     */
+    public static StringEncryptor buildSM4CTRStringEncryptor(String password) {
+        return buildEncryptor(password, CustomAlgorithm.SM4_CTR);
     }
 
     /**
@@ -132,6 +165,51 @@ public final class JasyptUtils {
         String encryptedText = wrapEncryptedText(encryptor.encrypt(text));
         System.out.println("可直接复制到配置文件的配置值 = " + encryptedText);
         System.out.println("解密值 = " + encryptor.decrypt(unwrapEncryptedText(encryptedText)));
+    }
+
+    /**
+     * 调试用方法，只用于生成一个国密SM4-GCM模式的加密值并复制到配置文件中
+     *
+     * @param text
+     */
+    public static void testSM4Encrypt(String password, String text) {
+        StringEncryptor encryptor = buildEncryptor(password, CustomAlgorithm.SM4);
+        String encryptedText = wrapEncryptedText(encryptor.encrypt(text));
+        System.out.println("可直接复制到配置文件的配置值 = " + encryptedText);
+        System.out.println("解密值 = " + encryptor.decrypt(unwrapEncryptedText(encryptedText)));
+    }
+
+    /**
+     * 调试用方法，只用于生成一个国密SM4-GCM模式的加密值并复制到配置文件中
+     *
+     * @param text
+     */
+    public static void testSM4CTREncrypt(String password, String text) {
+        StringEncryptor encryptor = buildEncryptor(password, CustomAlgorithm.SM4_CTR);
+        String encryptedText = wrapEncryptedText(encryptor.encrypt(text));
+        System.out.println("可直接复制到配置文件的配置值 = " + encryptedText);
+        System.out.println("解密值 = " + encryptor.decrypt(unwrapEncryptedText(encryptedText)));
+    }
+
+    /**
+     * 调试用方法，只用于生成一个解密值<br>
+     * 使用的是Jasypt默认算法进行加密
+     *
+     * @param password
+     * @param text
+     */
+    public static void testDecrypt(String password, String text) {
+        testDecrypt(buildStringEncryptor(password), text);
+    }
+
+    /**
+     * 调试用方法，只用于生成一个解密值
+     *
+     * @param encryptor
+     * @param text
+     */
+    public static void testDecrypt(StringEncryptor encryptor, String text) {
+        System.out.println("解密值 = " + encryptor.decrypt(unwrapEncryptedText(text)));
     }
 
     /**

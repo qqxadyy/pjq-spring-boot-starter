@@ -38,7 +38,8 @@ import lombok.Getter;
 import pjq.commons.utils.crypto.SMUtils;
 
 /**
- * 使用国密SM4算法的Jasypt加密器
+ * 使用国密SM4算法(GCM模式)的Jasypt加密器<br>
+ * 使用带完整性校验的GCM模式，每次加密都会随机生成IV，相同明文的密文每次都不同
  *
  * @author pengjianqiang
  * @date 2023-08-13

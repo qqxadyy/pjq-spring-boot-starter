@@ -85,8 +85,8 @@ public interface JasyptPasswordGetter {
             if (password.length() < 128) {
                 throw new RuntimeException(); //密码要求有一定长度
             }
-            if (CustomAlgorithm.SM4.equals(anno.algorithm())) {
-                //如果使用国密SM4算法，则截断配置的密码值(原因查看SMUtils.sm4CheckKey)
+            if (CustomAlgorithm.SM4.equals(anno.algorithm()) || CustomAlgorithm.SM4_CTR.equals(anno.algorithm())) {
+                //如果使用国密SM4算法(GCM或CTR模式)，则截断配置的密码值(原因查看SMUtils.sm4CheckKey)
                 password = password.substring(0, 16);
             }
             return password;
@@ -105,9 +105,14 @@ public interface JasyptPasswordGetter {
         JASYPT_DEFAULT,
 
         /**
-         * 国密SM4算法
+         * 国密SM4算法(GCM模式，带完整性校验)
          */
-        SM4
+        SM4,
+
+        /**
+         * 国密SM4算法(CTR模式，无完整性校验)
+         */
+        SM4_CTR
     }
 
     /**

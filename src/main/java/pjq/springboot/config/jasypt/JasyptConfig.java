@@ -42,6 +42,7 @@ import com.ulisesbocchio.jasyptspringboot.configuration.EncryptablePropertyResol
 import com.ulisesbocchio.jasyptspringboot.configuration.EnvCopy;
 import com.ulisesbocchio.jasyptspringbootstarter.JasyptSpringBootAutoConfiguration;
 
+import pjq.springboot.config.jasypt.JasyptPasswordGetter.CustomAlgorithm;
 import pjq.springboot.config.jasypt.JasyptPasswordGetter.DefaultJasyptPasswordGetter;
 import pjq.springboot.utils.JasyptUtils;
 
@@ -58,6 +59,7 @@ import pjq.springboot.utils.JasyptUtils;
 public class JasyptConfig {
     public static final String BEAN_NAME = "jasyptStringEncryptor";
     public static final String BEAN_NAME_FOR_SM4 = "sm4StringEncryptor";
+    public static final String BEAN_NAME_FOR_SM4_CTR = "sm4CtrStringEncryptor";
 
     @Bean
     @ConditionalOnMissingBean
@@ -76,11 +78,11 @@ public class JasyptConfig {
      */
     @Bean(BEAN_NAME)
     public StringEncryptor stringEncryptor(JasyptPasswordGetter jasyptPasswordGetter) {
-        return JasyptUtils.buildStringEncryptor(jasyptPasswordGetter.getPassword());
+        return JasyptUtils.buildEncryptor(jasyptPasswordGetter.getPassword(), CustomAlgorithm.JASYPT_DEFAULT);
     }
 
     /**
-     * 创建使用国密SM4算法的Jasypt加密器并作为Bean对象<br>
+     * 创建使用国密SM4算法(GCM模式)的Jasypt加密器并作为Bean对象<br>
      * 可以配置jasypt.encryptor.bean=sm4StringEncryptor，则配置文件的加解密使用本Bean处理
      *
      * @param jasyptPasswordGetter
@@ -88,6 +90,18 @@ public class JasyptConfig {
      */
     @Bean(BEAN_NAME_FOR_SM4)
     public StringEncryptor sm4StringEncryptor(JasyptPasswordGetter jasyptPasswordGetter) {
-        return JasyptUtils.buildSM4StringEncryptor(jasyptPasswordGetter.getPassword());
+        return JasyptUtils.buildEncryptor(jasyptPasswordGetter.getPassword(), CustomAlgorithm.SM4);
+    }
+
+    /**
+     * 创建使用国密SM4算法(CTR模式)的Jasypt加密器并作为Bean对象<br>
+     * 可以配置jasypt.encryptor.bean=sm4CtrStringEncryptor，则配置文件的加解密使用本Bean处理
+     *
+     * @param jasyptPasswordGetter
+     * @return
+     */
+    @Bean(BEAN_NAME_FOR_SM4_CTR)
+    public StringEncryptor sm4CtrStringEncryptor(JasyptPasswordGetter jasyptPasswordGetter) {
+        return JasyptUtils.buildEncryptor(jasyptPasswordGetter.getPassword(), CustomAlgorithm.SM4_CTR);
     }
 }
