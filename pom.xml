@@ -5,11 +5,11 @@
 	<parent>
 		<groupId>com.github.qqxadyy</groupId>
 		<artifactId>pjq-parent</artifactId>
-		<version>1.5.1</version>
+		<version>1.5.2</version>
 	</parent>
 
 	<artifactId>pjq-spring-boot-starter</artifactId>
-	<version>1.1.1-SNAPSHOT</version>
+	<version>1.1.2</version>
 	<name>pjq-spring-boot-starter</name>
 	<description>个人常用的Spring Boot应用配置代码</description>
 	<inceptionYear>2027</inceptionYear>
@@ -286,28 +286,6 @@
 						</goals>
 					</execution>
 				</executions>
-			</plugin>
-
-			<plugin>
-				<!-- 自动提交到sonatype审批发布 -->
-				<groupId>org.sonatype.plugins</groupId>
-				<artifactId>nexus-staging-maven-plugin</artifactId>
-				<extensions>true</extensions>
-				<configuration>
-					<serverId>sonatype-nexus</serverId> <!-- 和settings.xml里面的server配置一致，还有distributionManagement也是 -->
-					<nexusUrl>https://oss.sonatype.org/</nexusUrl>
-					<autoReleaseAfterClose>true</autoReleaseAfterClose>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-release-plugin</artifactId>
-				<configuration>
-					<autoVersionSubmodules>true</autoVersionSubmodules>
-					<useReleaseProfile>false</useReleaseProfile>
-					<releaseProfiles>release</releaseProfiles>
-					<goals>deploy</goals>
-				</configuration>
 			</plugin>
 		</plugins>
 	</build>
